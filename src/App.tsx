@@ -1,45 +1,39 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { ITheme, loadTheme, ThemeProvider } from "@fluentui/react";
+import React from "react";
+import ThemePanel from "./components/ThemePanel";
+import { ThemeObject } from "./themes/themes";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  )
+export interface IApp {
+  themes: ThemeObject[];
 }
 
-export default App
+/**
+ * creates for each passed in theme a ThemeProvider
+ * @param props
+ */
+const App: React.FC<IApp> = (props) => {
+  const [themes, setThemes] =
+    React.useState<{ name: string; theme: ITheme }[]>();
+
+  React.useEffect(() => {
+    const temp: { name: string; theme: ITheme }[] = [];
+    props.themes.forEach((theme) => {
+      temp.push({ name: theme.name, theme: loadTheme(theme.theme) });
+    });
+    setThemes(temp);
+  }, [props.themes]);
+
+  return (
+    <>
+      {themes?.map((theme, index) => {
+        return (
+          <ThemeProvider key={index} theme={theme.theme}>
+            <ThemePanel theme={theme}></ThemePanel>
+          </ThemeProvider>
+        );
+      })}
+    </>
+  );
+};
+
+export default App;
