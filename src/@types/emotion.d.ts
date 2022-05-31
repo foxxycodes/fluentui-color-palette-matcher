@@ -1,3 +1,4 @@
+import "@emotion/react";
 import { ITheme } from "@fluentui/react";
 
 declare module "@emotion/react" {

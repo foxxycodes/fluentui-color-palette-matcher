@@ -3,6 +3,7 @@ import { IPartialTheme, Text } from "@fluentui/react";
 import React from "react";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import { ThemeObject } from "../themes/themes";
+import ColorCard from "./ColorCard";
 
 // pick text color based on background color
 const textColorBasedOnBgColor = (bgColor: string) => {
@@ -35,20 +36,8 @@ const Palette = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-evenly;
-  gap: 10px;
-`;
-
-const Swatch = styled.button<{ bgColor: string }>`
-  border: none;
-  width: 100px;
-  height: 50px;
-  display: flex;
-  background-color: ${(props) => props.bgColor};
-  padding: 5px;
-  text-align: center;
-  border-radius: 5px;
-  box-shadow: ${(props) => props.theme.effects.elevation4};
+  justify-content: space-between;
+  gap: ${(props) => props.theme.spacing.s1};
 `;
 
 export interface IThemePanel {
@@ -57,8 +46,6 @@ export interface IThemePanel {
 
 const ThemePanel: React.FC<IThemePanel> = (props) => {
   const { theme } = props;
-  console.log(theme.theme.effects);
-  const [copiedText, copy] = useCopyToClipboard();
 
   const renderSwatches = (set: keyof IPartialTheme) => {
     const palette = theme.theme[set];
@@ -67,11 +54,12 @@ const ThemePanel: React.FC<IThemePanel> = (props) => {
     const swatches = [];
     for (const [key, value] of Object.entries(palette)) {
       swatches.push(
-        <Swatch key={key} bgColor={value} onClick={() => copy(value)}>
-          <Text style={{ color: textColorBasedOnBgColor(value) }}>
-            {`${key}:`} <br /> {value}
-          </Text>
-        </Swatch>
+        <ColorCard
+          key={`${key}-${value}`}
+          bgColor={value}
+          propertyName={key}
+          propertyPath={`theme.${set}.${key}`}
+        />
       );
     }
     return swatches;
@@ -79,9 +67,6 @@ const ThemePanel: React.FC<IThemePanel> = (props) => {
 
   return (
     <Wrapper>
-      <Head>
-        <Text variant="large">{theme.name}</Text>
-      </Head>
       <Palette>{renderSwatches("palette")}</Palette>
     </Wrapper>
   );

@@ -1,3 +1,5 @@
+import { ThemeProvider } from "@emotion/react";
+import { loadTheme } from "@fluentui/react";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
@@ -8,7 +10,9 @@ const root = document.getElementById("root")!;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App themes={themes} />
+    <ThemeProvider theme={loadTheme(themes[0].theme)}>
+      <App themes={themes} />
+    </ThemeProvider>
   </React.StrictMode>,
   root
 );
