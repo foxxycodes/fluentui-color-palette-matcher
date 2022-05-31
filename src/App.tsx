@@ -2,7 +2,7 @@ import { ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
 import { createTheme, initializeIcons, ITheme } from "@fluentui/react";
 import React from "react";
-import ThemePanel from "./components/ThemePanel";
+import ColorPalette from "./components/ColorPalette";
 import { ThemeObject } from "./themes/themes";
 
 const AppContainer = styled.div`
@@ -39,7 +39,7 @@ const App: React.FC<IApp> = (props) => {
     <AppContainer>
       {themes?.map((theme, index) => (
         <ThemeProvider key={index} theme={theme.theme}>
-          <ThemePanel theme={theme}></ThemePanel>
+          <ColorPalette theme={theme}></ColorPalette>
         </ThemeProvider>
       ))}
     </AppContainer>

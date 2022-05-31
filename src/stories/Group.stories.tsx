@@ -1,27 +1,28 @@
 import { getTheme } from "@fluentui/react";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import Accordion from "../components/Accordion";
+import Group from "../components/Group";
 import ColorPalette from "../components/ColorPalette";
 
 export default {
-  title: "Accordion",
-  component: Accordion,
+  title: "Group",
+  component: Group,
   parameters: {
     layout: "centered",
   },
-} as ComponentMeta<typeof Accordion>;
+} as ComponentMeta<typeof Group>;
 
-const Template: ComponentStory<typeof Accordion> = (args) => {
-  return <Accordion {...args} />;
+const Template: ComponentStory<typeof Group> = (args) => {
+  return <Group {...args} />;
 };
 
 export const WithPalette = Template.bind({});
 
 WithPalette.args = {
   title: "Teams Default - Palette",
-  open: true,
   children: (
-    <ColorPalette theme={{ name: "Default", theme: getTheme() }}></ColorPalette>
+    <ColorPalette
+      theme={{ name: "Teams Default", theme: getTheme() }}
+    ></ColorPalette>
   ),
 };
