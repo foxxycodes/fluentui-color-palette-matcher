@@ -17,6 +17,7 @@ const Template: ComponentStory<typeof ColorPalette> = (args) => {
 
 export const SingleSet = Template.bind({});
 export const MultipleSets = Template.bind({});
+export const Filter = Template.bind({});
 
 SingleSet.args = {
   theme: { name: "Default Teams", theme: getTheme() },
@@ -25,4 +26,11 @@ SingleSet.args = {
 MultipleSets.args = {
   theme: { name: "Default Teams", theme: getTheme() },
   sets: ["palette", "semanticColors"],
+};
+
+Filter.args = {
+  theme: { name: "Default Teams", theme: getTheme() },
+  sets: ["palette"],
+  filterByColor: "#0078d4",
+  maxFilteredColors: 3,
 };

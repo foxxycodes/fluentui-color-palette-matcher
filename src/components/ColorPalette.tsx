@@ -1,55 +1,15 @@
 import styled from "@emotion/styled";
-import { IPartialTheme, Text } from "@fluentui/react";
+import {
+  getColorFromString,
+  IColor,
+  IPartialTheme,
+  MotionAnimations,
+} from "@fluentui/react";
+import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
-import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import { ThemeObject } from "../themes/themes";
 import ColorCard from "./ColorCard";
 import Group from "./Group";
-
-// find nearest hex color
-const nearestHexColor = (color: string): string => {
-  const hex = color.replace(/^#/, "");
-  if (hex.length === 3) {
-    const hexArray = hex.split("");
-    hexArray.forEach((char, index) => {
-      hexArray[index] = char + char;
-    });
-    return "#" + hexArray.join("");
-  }
-  return color;
-};
-
-// get diff color
-const getDiffColor = (colorA: string, colorB: string) => {
-  const a = hexToRgb(colorA);
-  const b = hexToRgb(colorB);
-};
-
-// hex to rgb
-const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
-    : null;
-};
-
-// pick text color based on background color
-const textColorBasedOnBgColor = (bgColor: string) => {
-  // hex to rgb regex
-  const hexToRgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(bgColor);
-  if (!hexToRgb) {
-    return;
-  }
-  const r = parseInt(hexToRgb[1], 16);
-  const g = parseInt(hexToRgb[2], 16);
-  const b = parseInt(hexToRgb[3], 16);
-  const bgColorLuminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return bgColorLuminance > 128 ? "black" : "white";
-};
 
 const Wrapper = styled.div`
   display: flex;
@@ -60,40 +20,72 @@ const Wrapper = styled.div`
 `;
 
 const Palette = styled.div`
-  width: 100%;
-  display: grid; /* 1 */
-  grid-template-columns: repeat(auto-fill, 200px); /* 2 */
-  grid-gap: 1rem; /* 3 */
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: ${(props) => props.theme.spacing.s1};
   justify-content: space-between;
 `;
+
+const getDiffColor = (a: IColor, b: IColor) => {
+  return Math.sqrt((a.r - b.r) ** 2 + (a.g - b.g) ** 2 + (a.b - b.b) ** 2);
+};
 
 export interface IColorPalette {
   theme: ThemeObject;
   sets?: (keyof IPartialTheme)[];
+  filterByColor?: string;
+  maxFilteredColors?: number;
 }
 
 const ColorPalette: React.FC<IColorPalette> = (props) => {
-  const { theme, sets = ["palette"] } = props;
+  const {
+    theme,
+    sets = ["palette"],
+    filterByColor,
+    maxFilteredColors = 2,
+  } = props;
 
   const renderSwatches = React.useCallback(
     (set: keyof IPartialTheme) => {
       const subset = theme.theme[set];
       if (!subset) return;
-
-      const swatches = [];
+      const swatches: {
+        el: JSX.Element;
+        diff?: number;
+      }[] = [];
       for (const [propertyName, colorValue] of Object.entries(subset)) {
-        swatches.push(
-          <ColorCard
-            key={`${propertyName}-${colorValue}`}
-            bgColor={colorValue}
-            propertyName={propertyName}
-            propertyPath={`theme.${set}.${propertyName}`}
-          />
-        );
+        // calculate distance between filter color and color
+        const filterColor =
+          filterByColor !== undefined
+            ? getColorFromString(filterByColor)
+            : undefined;
+        const color = getColorFromString(colorValue);
+        const diff = filterColor && color && getDiffColor(filterColor, color);
+        swatches.push({
+          el: (
+            <ColorCard
+              bgColor={color ? color.str : ""}
+              propertyName={propertyName}
+              propertyPath={`${set}.${propertyName}`}
+              diff={diff}
+            />
+          ),
+          diff,
+        });
       }
-      return swatches;
+      // closest 3 colors
+      if (filterByColor !== undefined)
+        return swatches
+          .sort((a, b) => {
+            if (a.diff === undefined || b.diff === undefined) return 0;
+            return a.diff - b.diff;
+          })
+          .slice(0, maxFilteredColors)
+          .map((s) => s.el);
+      return swatches.map((swatch) => swatch.el);
     },
-    [theme]
+    [theme, filterByColor, maxFilteredColors]
   );
 
   return (

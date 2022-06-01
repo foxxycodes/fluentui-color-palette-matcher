@@ -1,8 +1,9 @@
-import { getTheme } from "@fluentui/react";
+import { getTheme, Text } from "@fluentui/react";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 import Group from "../components/Group";
 import ColorPalette from "../components/ColorPalette";
+import ColorCard from "../components/ColorCard";
 
 export default {
   title: "Group",
@@ -12,17 +13,23 @@ export default {
   },
 } as ComponentMeta<typeof Group>;
 
-const Template: ComponentStory<typeof Group> = (args) => {
-  return <Group {...args} />;
-};
+export const WithText = () => (
+  <Group title="Group">
+    <Text>This is a Text-Component inside a Group-Component.</Text>
+  </Group>
+);
 
-export const WithPalette = Template.bind({});
-
-WithPalette.args = {
-  title: "Teams Default - Palette",
-  children: (
-    <ColorPalette
-      theme={{ name: "Teams Default", theme: getTheme() }}
-    ></ColorPalette>
-  ),
-};
+export const WithColorCards = () => (
+  <Group title="Group">
+    <ColorCard
+      bgColor="#0078d4"
+      propertyName="blue"
+      propertyPath="theme.palette.blue"
+    />
+    <ColorCard
+      bgColor="#23d400"
+      propertyName="green"
+      propertyPath="theme.palette.green"
+    />
+  </Group>
+);
