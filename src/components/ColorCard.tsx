@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React from "react";
-import { Icon, Text } from "@fluentui/react";
+import { getTheme, Icon, Text } from "@fluentui/react";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
 const percentageGradient: { [key: string]: string } = {
@@ -30,10 +30,11 @@ const percentageGradient: { [key: string]: string } = {
 const Card = styled.button`
   cursor: pointer;
   outline: none;
-  border: thin solid ${(props) => props.theme.semanticColors.bodyDivider};
+  border: thin solid lightgray;
   display: flex;
   border-radius: ${(props) => props.theme.effects.roundedCorner4};
-  background-color: ${(props) => props.theme.palette.white};
+  background-color: white;
+  color: ${(props) => props.theme.palette.black};
   width: 200px;
   height: 50px;
   padding: 0px;
@@ -61,8 +62,8 @@ const TextWrapper = styled.div`
   text-align: left;
   overflow: hidden;
   margin-top: ${(props) => props.theme.spacing.s1};
-  min-height: 100%;
   padding-left: ${(props) => props.theme.spacing.s1};
+  background-color: white;
 `;
 
 const Accuracy = styled.div<{ percent: number }>`
@@ -106,6 +107,7 @@ const ColorCard: React.FC<IColorCard> = (props) => {
   const [percentage, setPercentage] = React.useState(
     (diff !== undefined && getAccuracy(diff)) || undefined
   );
+  const theme = getTheme();
 
   React.useEffect(() => {
     diff && setPercentage(getAccuracy(diff));
@@ -132,10 +134,15 @@ const ColorCard: React.FC<IColorCard> = (props) => {
         )}
       </Color>
       <TextWrapper>
-        <Text variant="small" block nowrap style={{ fontWeight: "bold" }}>
+        <Text
+          variant="small"
+          block
+          nowrap
+          style={{ fontWeight: "bold", color: theme.palette.black }}
+        >
           {propertyName}
         </Text>
-        <Text block nowrap>
+        <Text block nowrap style={{ color: theme.palette.black }}>
           {bgColor}
         </Text>
       </TextWrapper>

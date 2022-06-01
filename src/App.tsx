@@ -1,8 +1,19 @@
 import { ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
-import { createTheme, initializeIcons, ITheme } from "@fluentui/react";
+import {
+  createTheme,
+  IColor,
+  initializeIcons,
+  ITheme,
+  Separator,
+  Slider,
+  Text,
+} from "@fluentui/react";
 import React from "react";
+import Accordion from "./components/Accordion";
 import ColorPalette from "./components/ColorPalette";
+import ColorPicker from "./components/ColorPicker";
+import Layout from "./components/Layout";
 import { ThemeObject } from "./themes/themes";
 
 const AppContainer = styled.div`
@@ -22,6 +33,8 @@ export interface IApp {
 const App: React.FC<IApp> = (props) => {
   const [themes, setThemes] =
     React.useState<{ name: string; theme: ITheme }[]>();
+  const [maxMatches, setMaxMatches] = React.useState(2);
+  const [filterColor, setFilterColor] = React.useState<IColor | undefined>();
 
   React.useLayoutEffect(() => {
     initializeIcons();
@@ -37,11 +50,38 @@ const App: React.FC<IApp> = (props) => {
 
   return (
     <AppContainer>
-      {themes?.map((theme, index) => (
-        <ThemeProvider key={index} theme={theme.theme}>
-          <ColorPalette theme={theme}></ColorPalette>
-        </ThemeProvider>
-      ))}
+      <Layout
+        settingsPanel={
+          <>
+            <Text variant="large" style={{ fontWeight: "bold" }}>
+              Search For Closest Hex-Colors
+            </Text>
+            <Separator styles={{ root: { width: "100%" } }} />
+            <ColorPicker onColorChanged={(color) => setFilterColor(color)} />
+            <Separator styles={{ root: { width: "100%" } }} />
+            <Slider
+              styles={{ root: { width: "100%" } }}
+              label="Number of Matches"
+              min={0}
+              max={30}
+              value={maxMatches}
+              showValue
+              onChange={(value) => setMaxMatches(value)}
+            />
+          </>
+        }
+        content={themes?.map((theme, index) => (
+          <ThemeProvider key={index} theme={theme.theme}>
+            <Accordion title={theme.name} open={true}>
+              <ColorPalette
+                theme={theme}
+                filterByColor={filterColor?.str}
+                maxFilteredColors={maxMatches}
+              ></ColorPalette>
+            </Accordion>
+          </ThemeProvider>
+        ))}
+      />
     </AppContainer>
   );
 };

@@ -13,6 +13,10 @@ const SettingsPanel = styled.div`
   /* background-color: gray; */
   padding: ${(props) => props.theme.spacing.m};
   border-right: thin solid ${(props) => props.theme.semanticColors.bodyDivider};
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 `;
 
 const Content = styled.div`
