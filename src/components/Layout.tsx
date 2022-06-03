@@ -24,6 +24,9 @@ const Content = styled.div`
   width: 100%;
   /* background-color: gray; */
   padding: ${(props) => props.theme.spacing.m};
+  display: flex;
+  flex-direction: column;
+  gap: ${(props) => props.theme.spacing.m};
 `;
 
 export interface ILayout {

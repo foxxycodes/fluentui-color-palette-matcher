@@ -4,7 +4,7 @@ import { Text } from "@fluentui/react";
 
 const FieldSet = styled.fieldset`
   overflow: hidden;
-  border: 2px solid ${(props) => props.theme.semanticColors.bodyDivider};
+  border: 2px solid gray;
   border-radius: ${(props) => props.theme.effects.roundedCorner6};
   display: flex;
   flex-direction: column;

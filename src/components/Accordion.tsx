@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 const Paper = styled.div`
   max-width: 100%;
   border-radius: ${(props) => props.theme.effects.roundedCorner6};
-  box-shadow: ${(props) => props.theme.effects.elevation4};
+  box-shadow: ${(props) => props.theme.effects.elevation16};
   display: flex;
   flex-direction: column;
 `;
@@ -14,7 +14,7 @@ const Paper = styled.div`
 const Header = styled.div`
   cursor: pointer;
   height: 55px;
-  border-bottom: thin solid ${(props) => props.theme.semanticColors.bodyDivider};
+  border-bottom: thin solid lightgray;
   display: flex;
   gap: ${(props) => props.theme.spacing.s1};
   align-items: center;
@@ -53,7 +53,7 @@ const Accordion: React.FC<IAccordion> = (props) => {
           iconName={"ChevronUp"}
         />
       </Header>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {open && (
           <Content
             initial={{ height: 0, padding: 0, opacity: 0 }}

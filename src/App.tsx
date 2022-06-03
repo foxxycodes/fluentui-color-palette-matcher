@@ -2,6 +2,7 @@ import { ThemeProvider } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
   createTheme,
+  getTheme,
   IColor,
   initializeIcons,
   ITheme,
